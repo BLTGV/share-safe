@@ -119,7 +119,7 @@ function Share({ meta }: { meta: SecretMetaRequest }) {
   return (
     <>
       <div>
-        <p>1. ✅</p>
+        <p>1. ✅ The recipient has shared the link.</p>
         <p>2a. Time to share your secret! Copy or type your secret below.</p>
         <textarea
           placeholder="Input Secret Here"
@@ -144,8 +144,8 @@ function Receive({ meta }: { meta: SecretMetaShare }) {
   const isYours = publicKey === meta.recipientPubKey;
   return (
     <div>
-      <p>1. ✅</p>
-      <p>2. ✅</p>
+      <p>1. ✅ The recipient has shared the link.</p>
+      <p>2. ✅ The sender has sent the secret.</p>
       {!isYours ? (
         <>
           <h2>⛔ Keys don't match.</h2>
