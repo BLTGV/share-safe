@@ -9,7 +9,6 @@ import createPersistedState from "use-persisted-state";
 import { encryptSecret, decryptSecret, generateKeyPair } from "./crypto";
 import "./App.scss";
 import useCopy from "@react-hook/copy";
-import { join, pipe, splitEvery } from "ramda";
 
 export interface UserMeta {
   publicKey: string;
@@ -89,7 +88,7 @@ function MetaTextArea({
   cols?: number;
   rows?: number;
 }) {
-  const { encodedMeta, url, copy, copied } = useMetaCopy(meta);
+  const { encodedMeta, copy } = useMetaCopy(meta);
   return (
     <div style={{ display: "inline-block" }}>
       <textarea value={encodedMeta} disabled cols={cols} rows={rows} />
@@ -132,8 +131,8 @@ function Share({ meta }: { meta: SecretMetaRequest }) {
       </div>
       <div>
         <p>
-          2b. Then click copy below and give it back to the same person who gave you the link in step
-          1.
+          2b. Then click copy below and give it back to the same person who gave
+          you the link in step 1.
         </p>
         <MetaTextArea meta={share} cols={40} rows={12} />
       </div>
