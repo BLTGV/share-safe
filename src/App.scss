@@ -1,0 +1,52 @@
+.container {
+  padding-left: 40px;
+  padding-right: 40px;
+  height: 100vh;
+  font-family: monospace;
+  font-size: large;
+  color: rgb(97, 97, 97);
+
+  div {
+    margin-top: 10px;
+    position: relative;
+  }
+
+  h2 {
+    margin-top: 50px;
+    color: #000000;
+  }
+
+  p::first-letter {
+    font-size: 23px;
+  }
+
+  textarea {
+    margin-top: 10px;
+    font-family: monospace;
+    font-size: large;
+    resize: none;
+    border-radius: 6px;
+  }
+
+  button {
+    background-color: #fbaa19;
+    color: rgb(43, 43, 43);
+    border: none;
+    font-size: large;
+    margin: 4px 2px;
+    padding: 6px 6px;
+    border-radius: 6px;
+    opacity: 0.8;
+    transition-duration: 500ms;
+    &:hover {
+      opacity: 0.9;
+      transform: scale(1.05);
+    }
+  }
+
+  .upper-right {
+    position: absolute;
+    top: 20px;
+    right: 10px;
+  }
+}
