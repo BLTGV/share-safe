@@ -81,7 +81,7 @@ const useMetaCopy = (meta: SecretMeta) => {
 
 function MetaTextArea({
   meta,
-  cols = 40,
+  cols = 32,
   rows = 6,
 }: {
   meta: SecretMeta;
@@ -125,7 +125,7 @@ function Share({ meta }: { meta: SecretMetaRequest }) {
           placeholder="Input Secret Here"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          cols={40}
+          cols={32}
           rows={10}
         />
       </div>
@@ -134,7 +134,7 @@ function Share({ meta }: { meta: SecretMetaRequest }) {
           2b. Then click copy below and give it back to the same person who gave
           you the link in step 1.
         </p>
-        <MetaTextArea meta={share} cols={40} rows={12} />
+        <MetaTextArea meta={share} cols={32} rows={12} />
       </div>
     </>
   );
@@ -159,7 +159,7 @@ function Receive({ meta }: { meta: SecretMetaShare }) {
           <textarea
             disabled
             value={decryptSecret(meta.secret, secretKey, meta.senderPubKey)}
-            cols={40}
+            cols={32}
             rows={10}
           />
         </>
