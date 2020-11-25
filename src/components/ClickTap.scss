@@ -1,0 +1,15 @@
+.click {
+    display: inline;
+
+    @media screen and (max-width: 1000px) {
+        display: none;
+    }
+}
+
+.tap {
+    display: none;
+
+    @media screen and (max-width: 1000px) {
+        display: inline;
+    }
+}

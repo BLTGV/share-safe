@@ -9,6 +9,7 @@ import createPersistedState from "use-persisted-state";
 import { encryptSecret, decryptSecret, generateKeyPair } from "./crypto";
 import "./App.scss";
 import useCopy from "@react-hook/copy";
+import Request from "./components/Request";
 
 export interface UserMeta {
   publicKey: string;
@@ -191,28 +192,23 @@ function App() {
 
   return (
     <Router>
-      <div className="container">
-        <h2>
-          <code>&gt;share secret_</code>
-        </h2>
-        <h3>
-          <code>Share sensitive information securely in 3 easy steps.</code>
-        </h3>
-        <Switch>
-          <Route path="/s/:meta">
-            <Secret />
-          </Route>
-          <Route path="/">
-            <p>
-              1. <b>The recipient starts here.</b> Copy and send the text below
-              to the secret holder. If it shows up as a link, they should click
-              it. If not, then they need to copy it into the url of their
-              browser. Don't worry. It's safe.
-            </p>
-            <MetaTextArea meta={meta} />
-          </Route>
-        </Switch>
-      </div>
+      <Switch>
+        <Route path="/request">
+          <Request/>
+        </Route>
+        <Route path="/s/:meta">
+          <Secret />
+        </Route>
+        <Route path="/">
+          <p>
+            1. <b>The recipient starts here.</b> Copy and send the text below to
+            the secret holder. If it shows up as a link, they should click it.
+            If not, then they need to copy it into the url of their browser.
+            Don't worry. It's safe.
+          </p>
+          <MetaTextArea meta={meta} />
+        </Route>
+      </Switch>
     </Router>
   );
 }

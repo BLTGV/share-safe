@@ -1,0 +1,222 @@
+.container {
+  display: block;
+  width: 50vw;
+  min-width: 1000px;
+  height: 100vh;
+  margin: auto;
+  padding-top: 0.1px;
+
+  @media screen and (max-width: 1000px) {
+    width: unset;
+    min-width: unset;
+  }
+
+  .request {
+    display: block;
+    margin-top: 40vh;
+    cursor: pointer;
+    transition: all 0.5s ease;
+
+    &:hover {
+      .tip {
+        opacity: 1;
+      }
+    }
+
+    &.copied {
+      margin-top: 25vh;
+      cursor: default;
+
+      @media screen and (max-width: 1000px) {
+        margin-top: 15vh;
+      }
+
+      @media screen and (max-height: 500px) {
+        margin-top: 0vh;
+      }
+
+      .fadeable {
+        opacity: 0.2;
+
+        .tip {
+          display: none;
+        }
+      }
+
+      .confirmation {
+        display: block;
+      }
+    }
+
+    .fadeable {
+      display: block;
+      opacity: 1;
+      transition: all 0.5s ease;
+
+      h1 {
+        font-size: 2rem;
+        font-weight: 200;
+        line-height: 1;
+        margin: 5px 0;
+
+        b {
+            color: #d12656;
+        }
+
+        @media screen and (max-width: 1000px) {
+            font-size: 1.5rem;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+      }
+
+      .url {
+        display: block;
+        font-size: 0.75rem;
+        word-break: break-all;
+      }
+
+      .tip {
+        display: block;
+        font-size: 1rem;
+        padding-top: 20px;
+        opacity: 0;
+        transition: all 0.5s ease;
+
+        @media screen and (max-width: 1000px) {
+          opacity: 1;
+        }
+
+        b {
+          color: #faa919;
+          font-weight: normal;
+        }
+      }
+    }
+
+    .confirmation {
+      display: none;
+      font-size: 0.75rem;
+      color: #0f0;
+    }
+  }		
+
+  .response {
+    display: block;
+    margin-top: 50px;
+    margin-bottom: 20vh;
+
+    @media screen and (max-height: 500px) {
+      margin-top: 20px;
+    }
+
+    textarea {
+      margin-top: 10px;
+      width: 100%;
+      height: 34px;
+      padding: 10px 20px;
+      border: 0;
+      border-radius: 5px;
+      background-color: #444;
+      color: #fff;
+      font-family: Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+      font-size: 0.75rem;
+      resize: none;
+    }
+
+    .secret {
+      display: block;
+      transition: all 0.5s ease;
+
+      &.copied {
+        div.confirmation.copied {
+          display: block;
+        }
+
+        .decoded,
+        .tip {
+          display: none;
+        }
+      }
+
+      div.confirmation {
+        display: block;
+        font-size: 0.75rem;
+        transition: all 0.5s ease;
+
+        &.copied {
+          display: none;
+          color: #0f0;
+        }
+      }
+
+      div.reset {
+        font-size: 1rem;
+        margin-top: 20px;
+        padding: 5px 0px;
+        cursor: pointer;
+
+        &:hover {
+          span {
+            width: 100px;
+            opacity: 1;
+          }
+        }
+                
+        span {
+          display: inline-block;
+          width: 0;
+          opacity: 0;
+          white-space: nowrap;
+          overflow: hidden;
+          vertical-align: bottom;						
+          transition: all 0.5s ease;
+
+          @media screen and (max-width: 1000px) {
+            width: 100px;
+            opacity: 1;
+          }	
+
+          b {
+            color: #faa919;
+            font-weight: normal;
+          }						
+        }
+      }
+
+      .decoded {
+        display: block;
+        border-radius: 5px;
+        transition: all 0.5s ease;
+        padding: 10px 20px;
+        margin: 12px -7px;
+        color: #fff;
+        background-color: #444;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #555;
+        }
+
+        .message {
+          display: block;
+          font-size: 1rem;
+          padding: 10px 0px 20px 0px;
+          border-bottom: 1px solid #333;
+        }
+
+        .tip {
+          display: block;
+          font-size: 0.75rem;
+          padding-top: 10px;
+          transition: all 0.5s ease;
+
+          b {
+            color: #faa919;
+            font-weight: normal;
+          }
+        }
+      }
+    }		
+  }
+}
