@@ -9,7 +9,7 @@ import createPersistedState from "use-persisted-state";
 import { encryptSecret, decryptSecret, generateKeyPair } from "./crypto";
 import "./App.scss";
 import useCopy from "@react-hook/copy";
-import Request from "./components/Request";
+import Request from "./pages/request";
 
 export interface UserMeta {
   publicKey: string;
