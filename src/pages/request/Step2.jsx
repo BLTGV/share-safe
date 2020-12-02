@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "@emotion/styled";
 
 import Click from "../../components/ClickTap";
@@ -7,64 +7,43 @@ import Confirmation from "../../components/Confirmation";
 
 const Wrapper = styled.div`
   .step {
-    margin-top: 50px;
-    margin-bottom: 20vh;
-
-    @media screen and (max-height: 500px) {
-      margin-top: 20px;
-    }
-
-    &.pasted {
-      textarea {
-        display: none;
-        opacity: 0;
-      }
-    }
-
-    &.decoded {
-      .confirmation.decoded {
-        display: block;
-      }
-
-      .decoded-message {
-        opacity: 1;
-      }
-    }
-
-    &.copied {
-      .decoded-message {
-        display: none;
-      }
-
-      .confirmation.copied {
-        opacity: 1;
-      }
-
-      .reset {
-        display: block;
-      }
-    }    
-
-    textarea {
+    .textarea-wrapper {
       opacity: 1;
-      margin-top: 10px;
-      width: 100%;
-      height: calc(20px + 0.75rem);
-      padding: 10px 20px;
-      border: 0;
-      border-radius: 5px;
-      background-color: #444;
-      color: #fff;
-      font-family: Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-      font-size: 0.75rem;
-      resize: none;
-    }  
-    
+      height: unset;
+      transition: opacity 0.5s ease;
+
+      textarea {
+        margin-top: 10px;
+        width: 100%;
+        height: calc(20px + 0.75rem);
+        padding: 10px 20px;
+        border: 0;
+        border-radius: 5px;
+        background-color: #444;
+        color: #fff;
+        font-family: Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+        font-size: 0.75rem;
+        resize: none;
+        overflow: hidden;
+      } 
+    }
+
+    &.encoded-message-pasted .textarea-wrapper {
+      opacity: 0;
+      height: 0;
+      overflow: hidden;
+    }
+
     .confirmation.decoded {
       display: none;
     }
 
+    &.encoded-message-decoded .confirmation.decoded {
+      display: block;
+    }
+
     .decoded-message {
+      display: none;
       opacity: 0;
       border-radius: 5px;
       padding: 10px 20px;
@@ -91,15 +70,37 @@ const Wrapper = styled.div`
       }
     }
 
+    &.encoded-message-decoded .decoded-message {
+      display: block;
+      opacity: 1;
+    }
+
+    &.decoded-message-copied .decoded-message {
+      display: none;
+    }
+
     .confirmation.copied {
+      display: none;
       opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    &.decoded-message-copied .confirmation.copied {
+      display: block;
+      opacity: 1;
+      transition: opacity 0.5s ease;
     }
 
     .reset {
       display: none;
-      margin-top: 20px;
+      opacity: 0;
       padding: 5px 0px;
       cursor: pointer;
+      transition: opacity 0.5s ease;
+
+      @media screen and (max-width: 1000px) {
+        margin-top: 20px;
+      }
 
       &:hover {
         .click-tap {
@@ -123,56 +124,50 @@ const Wrapper = styled.div`
         }
       }
     }
+  
+    &.encoded-message-decoded .reset {
+      display: block;
+      opacity: 1;
+    }
+
+    &.decoded-message-copied .reset {
+      display: block;
+      opacity: 1;
+    }
   }
 `;
 
-export default function Step2({ onEncodedMessagePasted, decodedMessage, onDecodedMessageClicked }) {
-  const [encodedMessagePasted, setEncodedMessagePasted] = useState(false);
-  const [encodedMessageDecoded, setEncodedMessageDecoded] = useState(false);
-  const [decodedMessageCopied, setDecodedMessageCopied] = useState(false);
+export default function Step2({ encodedMessage, decodedMessage, encodedMessagePasted, encodedMessageDecoded, decodedMessageCopied, onEncodedMessagePasted, onDecodedMessageClicked, onReset }) {
+  const handleChange = () => {
+    // Do nothing. We are ignoring all inputs on the textarea, except for paste
+  };
 
-
-  const handlePaste = (e) => {
-    setEncodedMessagePasted(true);
-
-    const decodeMessage = new Promise((handleSuccess, handleFailure) => {
-      const result = onEncodedMessagePasted(e.target.value);
-      e.target.value = "";
-
-      if (result)
-        handleSuccess();
-      else
-        handleFailure();
-    });
-
-    decodeMessage.then(
-      () => setEncodedMessageDecoded(true),
-      () => {}
-    );
+  const handlePaste = () => {
+    if (!onEncodedMessagePasted(encodedMessage)) {
+      // activate error message
+    }
   };
 
   const handleCopy = () => {
-    onDecodedMessageClicked(decodedMessage);
-
-    setDecodedMessageCopied(true);
+    onDecodedMessageClicked();
   };
 
   const handleReset = () => {
-    setEncodedMessagePasted(false);
-    setEncodedMessageDecoded(false);
-    setDecodedMessageCopied(false);
+    onReset();
   };
 
-  let classes = "";
-  classes += encodedMessagePasted ? " pasted" : "";
-  classes += encodedMessageDecoded ? " decoded" : "";
-  classes += decodedMessageCopied ? " copied" : "";
+  let classes = "response";
+  classes += encodedMessagePasted ? " encoded-message-pasted" : "";
+  classes += encodedMessageDecoded ? " encoded-message-decoded" : "";
+  classes += decodedMessageCopied ? " decoded-message-copied" : "";
   classes = classes.trim();
 
   return (
     <Wrapper>
-      <Step number="2" title="Paste the response from the secret holder here" className={`response ${classes}`.trim()}>
-        <textarea onPaste={handlePaste} />
+      <Step number="2" title="Paste the response from the secret holder here" className={classes}>
+        <div className="textarea-wrapper">
+          <textarea id="response-input" value={encodedMessage} onChange={handleChange} onPaste={handlePaste} />
+        </div>
         <Confirmation className="decoded">Response pasted and decoded</Confirmation>
         <div className="decoded-message" onClick={handleCopy}>
           <div className="message">{decodedMessage}</div>

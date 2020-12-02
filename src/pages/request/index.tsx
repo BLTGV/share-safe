@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import useCopy from "@react-hook/copy";
 
 import { useUserMeta, SecretMeta, decode, ParamsMeta, useMetaCopy } from "../../util";
 import { useParams } from "react-router-dom";
@@ -10,15 +11,37 @@ import Step2 from "./Step2";
 import styled from "@emotion/styled";
 
 const Container = styled.div`
-  &.url-copied {
-    .response {
-      opacity: 1;
+  padding-top: 0.1px;
+
+  .request {
+    margin-top: 40vh;
+    transition: margin-top 1s ease;
+  }
+
+  &.url-copied .request {
+    margin-top: 25vh;
+
+    @media screen and (max-width: 1000px) {
+      margin-top: 15vh;
+    }
+
+    @media screen and (max-height: 500px) {
+      margin-top: 0vh;
     }
   }
 
   .response {
     opacity: 0;
-    transition: all 0.5s ease;
+    margin-top: 50px;
+    margin-bottom: 20vh;
+
+    @media screen and (max-height: 500px) {
+      margin-top: 20px;
+    }
+  }
+
+  &.url-copied .response {
+    opacity: 1;
   }
 `;
 
@@ -35,26 +58,72 @@ export default function Main() {
   }
 
   const [urlCopied, setUrlCopied] = useState(false);
+  const [encodedMessagePasted, setEncodedMessagePasted] = useState(false);
+  const [encodedMessageDecoded, setEncodedMessageDecoded] = useState(false);
+  const [decodedMessageCopied, setDecodedMessageCopied] = useState(false);
 
-  const handleUrlCopy = () => {
+  const [encodedMessage, setEncodedMessage] = useState("");
+  const [decodedMessage, setDecodedMessage] = useState("");
+
+  const focusOnResponseTextarea = () => {
+    document.getElementById("response-input")?.focus();
+  };
+
+  const handleUrlClicked = () => {
     copy();
 
     setUrlCopied(true);
+
+    focusOnResponseTextarea();
   };
 
-  const handleMessageCopy = () => {
-    copy();
+  const handleEncodedMessagePasted = (m: string) => {
+    setEncodedMessagePasted(true);
+    setEncodedMessageDecoded(false);
+    setDecodedMessageCopied(false);
+
+    setEncodedMessage(m);
+    setDecodedMessage("");
+
+    // decode the message
+
+    setEncodedMessageDecoded(true);
+    setDecodedMessage("Why won't you love me?");
+    return true;
+
+    // return false if failed to decode
+  };
+
+  const handleDecodedMessageClicked = () => {
+    // copy decodedMessage to clipboard
+
+    setDecodedMessageCopied(true);
+    setDecodedMessage("");
+  };
+
+  const handleReset = () => {
+    setEncodedMessagePasted(false);
+    setEncodedMessageDecoded(false);
+    setDecodedMessageCopied(false);
+
+    setEncodedMessage("");
+    setDecodedMessage("");
+
+    focusOnResponseTextarea();
   };
 
   let classes = "";
   classes += urlCopied ? " url-copied" : "";
+  classes += encodedMessagePasted ? " encoded-message-pasted" : "";
+  classes += encodedMessageDecoded ? " encoded-message-decoded" : "";
+  classes += decodedMessageCopied ? " decoded-message-copied" : "";
   classes = classes.trim();
 
   return (
     <Base>
       <Container className={classes}>
-        <Step1 url={url} onUrlClicked={handleUrlCopy} />
-        <Step2 onEncodedMessagePasted={() => { return true; }} decodedMessage="Why won't you love me?" onDecodedMessageClicked={handleMessageCopy} />
+        <Step1 url={url} urlCopied={urlCopied} onUrlClicked={handleUrlClicked} />
+        <Step2 encodedMessage={encodedMessage} decodedMessage={decodedMessage} encodedMessagePasted={encodedMessagePasted} encodedMessageDecoded={encodedMessageDecoded} decodedMessageCopied={decodedMessageCopied} onEncodedMessagePasted={handleEncodedMessagePasted} onDecodedMessageClicked={handleDecodedMessageClicked} onReset={handleReset} />
       </Container>
     </Base>
   );

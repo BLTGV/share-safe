@@ -37,7 +37,7 @@ const Container = styled.div`
 export default function Main({ children }) {
   return (
     <Container>
-        <div class="logo" />
+        <div className="logo" />
         {children}
     </Container>
   );
