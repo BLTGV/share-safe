@@ -4,7 +4,9 @@ import useCopy from "@react-hook/copy";
 import { useUserMeta, SecretMeta, decode, ParamsMeta, useMetaCopy } from "../../util";
 import { useParams } from "react-router-dom";
 
-import Context from "./_context"
+import Copy from "../../components/Copy";
+
+import Context from "./_context";
 import Base from "../_layout";
 import Step1 from "./Step1";
 import Step2 from "./Step2";
@@ -47,16 +49,18 @@ const Container = styled.div`
 `;
 
 export default function Main() {
-  const { publicKey, secretKey } = useUserMeta();
-  let meta: SecretMeta = { type: "request", recipientPubKey: publicKey };
-  const { url, encodedMeta, copy, copied } = useMetaCopy(meta);
-  const isYours = publicKey === meta.recipientPubKey;
+  // const { publicKey, secretKey } = useUserMeta();
+  // let meta: SecretMeta = { type: "request", recipientPubKey: publicKey };
+  // const { url, encodedMeta, copy, copied } = useMetaCopy(meta);
+  // const isYours = publicKey === meta.recipientPubKey;
 
-  const { meta: metaEncoded } = useParams<ParamsMeta>();
+  // const { meta: metaEncoded } = useParams<ParamsMeta>();
 
-  if(metaEncoded) {
-    meta = decode(metaEncoded);
-  }
+  // if(metaEncoded) {
+  //   meta = decode(metaEncoded);
+  // }
+
+	const url = "http://share.blt.sh/s/eyJ0eXBlIjoicmVxdWVzdCIsInJlY2lwaWVudFB1YktleSI6IlpCcDdXUmsyVXRvYUV0MjVrdk9vZ0ZuMHZVZWNSaGVRMzlDekF4eTZDWDA9In0=";	
 
   const [urlCopied, setUrlCopied] = useState(false);
   const [encodedMessagePasted, setEncodedMessagePasted] = useState(false);
@@ -80,7 +84,7 @@ export default function Main() {
   };
 
   const handleUrlClicked = () => {
-    copy();
+    Copy(url);
 
     setUrlCopied(true);
 
@@ -105,7 +109,7 @@ export default function Main() {
   };
 
   const handleDecodedMessageClicked = () => {
-    // copy decodedMessage to clipboard
+    Copy(decodedMessage);
 
     setDecodedMessageCopied(true);
     setDecodedMessage("");
