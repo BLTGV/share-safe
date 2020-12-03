@@ -1,4 +1,4 @@
-export default function Copy (m) {
+export default function Copy (m: string) {
     const textArea = document.createElement("textarea");
 
     textArea.value = m;
