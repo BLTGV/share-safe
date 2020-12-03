@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import useCopy from "@react-hook/copy";
+import React, { useState } from "react";
 
-import { useUserMeta, SecretMeta, decode, ParamsMeta, useMetaCopy } from "../../util";
-import { useParams } from "react-router-dom";
+// import useCopy from "@react-hook/copy";
+// import { useUserMeta, SecretMeta, decode, ParamsMeta, useMetaCopy } from "../../util";
+// import { useParams } from "react-router-dom";
 
 import Copy from "../../components/Copy";
 
@@ -77,18 +77,10 @@ export default function Main() {
     decodedMessageCopied: decodedMessageCopied
   };
 
-  const focusOnResponseTextarea = () => {
-    // this should be done using useRef()
-    // doing it this way for now because of TypeScript
-    document.getElementById("response-input")?.focus();
-  };
-
   const handleUrlClicked = () => {
     Copy(url);
 
     setUrlCopied(true);
-
-    focusOnResponseTextarea();
   };
 
   const handleEncodedMessagePasted = (m: string) => {
@@ -122,8 +114,6 @@ export default function Main() {
 
     setEncodedMessage("");
     setDecodedMessage("");
-
-    focusOnResponseTextarea();
   };
 
   let classes = "";

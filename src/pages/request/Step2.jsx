@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useEffect, useContext, useRef } from "react";
 import styled from "@emotion/styled";
 
 import Context from "./_context"
@@ -165,11 +165,18 @@ export default function Step2({ encodedMessage, decodedMessage, onEncodedMessage
   classes += progress.decodedMessageCopied ? " decoded-message-copied" : "";
   classes = classes.trim();
 
+  const response = useRef(null);
+  
+  useEffect(() => {
+    if (progress.urlCopied && !progress.encodedMessagePasted) 
+      response.current.focus();
+  });
+
   return (
     <Wrapper>
       <Step number="2" title="Paste the response from the secret holder here" className={classes}>
         <div className="textarea-wrapper">
-          <textarea id="response-input" value={encodedMessage} onChange={handleChange} onPaste={handlePaste} />
+          <textarea ref={response} value={encodedMessage} onChange={handleChange} onPaste={handlePaste} />
         </div>
         <Confirmation className="decoded">Response pasted and decoded</Confirmation>
         <div className="decoded-message" onClick={handleCopy}>
