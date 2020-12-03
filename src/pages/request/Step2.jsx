@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "@emotion/styled";
 
+import Context from "./_context"
 import Click from "../../components/ClickTap";
 import Step from "../../components/Step";
 import Confirmation from "../../components/Confirmation";
@@ -137,7 +138,7 @@ const Wrapper = styled.div`
   }
 `;
 
-export default function Step2({ encodedMessage, decodedMessage, encodedMessagePasted, encodedMessageDecoded, decodedMessageCopied, onEncodedMessagePasted, onDecodedMessageClicked, onReset }) {
+export default function Step2({ encodedMessage, decodedMessage, onEncodedMessagePasted, onDecodedMessageClicked, onReset }) {
   const handleChange = () => {
     // Do nothing. We are ignoring all inputs on the textarea, except for paste
   };
@@ -156,10 +157,12 @@ export default function Step2({ encodedMessage, decodedMessage, encodedMessagePa
     onReset();
   };
 
+  const progress = useContext(Context);
+
   let classes = "response";
-  classes += encodedMessagePasted ? " encoded-message-pasted" : "";
-  classes += encodedMessageDecoded ? " encoded-message-decoded" : "";
-  classes += decodedMessageCopied ? " decoded-message-copied" : "";
+  classes += progress.encodedMessagePasted ? " encoded-message-pasted" : "";
+  classes += progress.encodedMessageDecoded ? " encoded-message-decoded" : "";
+  classes += progress.decodedMessageCopied ? " decoded-message-copied" : "";
   classes = classes.trim();
 
   return (

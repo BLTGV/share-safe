@@ -4,6 +4,7 @@ import useCopy from "@react-hook/copy";
 import { useUserMeta, SecretMeta, decode, ParamsMeta, useMetaCopy } from "../../util";
 import { useParams } from "react-router-dom";
 
+import Context from "./_context"
 import Base from "../_layout";
 import Step1 from "./Step1";
 import Step2 from "./Step2";
@@ -65,7 +66,16 @@ export default function Main() {
   const [encodedMessage, setEncodedMessage] = useState("");
   const [decodedMessage, setDecodedMessage] = useState("");
 
+  const progressFlags = {
+    urlCopied: urlCopied,
+    encodedMessagePasted: encodedMessagePasted,
+    encodedMessageDecoded: encodedMessageDecoded,
+    decodedMessageCopied: decodedMessageCopied
+  };
+
   const focusOnResponseTextarea = () => {
+    // this should be done using useRef()
+    // doing it this way for now because of TypeScript
     document.getElementById("response-input")?.focus();
   };
 
@@ -121,10 +131,17 @@ export default function Main() {
 
   return (
     <Base>
-      <Container className={classes}>
-        <Step1 url={url} urlCopied={urlCopied} onUrlClicked={handleUrlClicked} />
-        <Step2 encodedMessage={encodedMessage} decodedMessage={decodedMessage} encodedMessagePasted={encodedMessagePasted} encodedMessageDecoded={encodedMessageDecoded} decodedMessageCopied={decodedMessageCopied} onEncodedMessagePasted={handleEncodedMessagePasted} onDecodedMessageClicked={handleDecodedMessageClicked} onReset={handleReset} />
-      </Container>
+      <Context.Provider value={progressFlags}>
+        <Container className={classes}>
+          <Step1  url={url} 
+                  onUrlClicked={handleUrlClicked} />
+          <Step2  encodedMessage={encodedMessage} 
+                  decodedMessage={decodedMessage} 
+                  onEncodedMessagePasted={handleEncodedMessagePasted} 
+                  onDecodedMessageClicked={handleDecodedMessageClicked} 
+                  onReset={handleReset} />
+        </Container>
+      </Context.Provider>
     </Base>
   );
 }

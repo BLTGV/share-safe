@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "@emotion/styled";
 
+import Context from "./_context"
 import Click from "../../components/ClickTap";
 import Step from "../../components/Step";
 import Confirmation from "../../components/Confirmation";
@@ -48,9 +49,11 @@ const Wrapper = styled.div`
   }
 `;
 
-export default function Step1({ url, urlCopied, onUrlClicked }) {
+export default function Step1({ url, onUrlClicked }) {
+  const progress = useContext(Context);
+
   let classes = "request";
-  classes += urlCopied ? " url-copied" : "";
+  classes += progress.urlCopied ? " url-copied" : "";
   classes = classes.trim();
   
   return (
