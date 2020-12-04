@@ -51,7 +51,12 @@ const Wrapper = styled.div`
   }
 `;
 
-export default function Step1(props: { url: string, onUrlClicked: () => void }) {
+interface PropType {
+  url: string;
+  onUrlClicked: () => void;
+}
+
+export default function Step1(props: PropType) {
   const progress = useContext(Context) as ProgressFlags;
 
   let classes = "request";
