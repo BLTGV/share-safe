@@ -2,6 +2,8 @@ import React, { useContext } from "react";
 import styled from "@emotion/styled";
 
 import Context from "./_context"
+import { ProgressFlags } from "./_interfaces"
+
 import Click from "../../components/ClickTap";
 import Step from "../../components/Step";
 import Confirmation from "../../components/Confirmation";
@@ -49,8 +51,8 @@ const Wrapper = styled.div`
   }
 `;
 
-export default function Step1({ url, onUrlClicked }) {
-  const progress = useContext(Context);
+export default function Step1(props: { url: string, onUrlClicked: () => void }) {
+  const progress = useContext(Context) as ProgressFlags;
 
   let classes = "request";
   classes += progress.urlCopied ? " url-copied" : "";
@@ -58,8 +60,8 @@ export default function Step1({ url, onUrlClicked }) {
   
   return (
     <Wrapper>
-      <Step number="1" title="Send this link to the secret holder" className={classes} onClick={onUrlClicked}>
-        <div className="url">{url}</div>
+      <Step number="1" title="Send this link to the secret holder" className={classes} onClick={props.onUrlClicked}>
+        <div className="url">{props.url}</div>
         <Click>to copy the link to your clipboard</Click>
         <Confirmation>Link copied to your clipboard</Confirmation>
       </Step>

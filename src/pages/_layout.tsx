@@ -34,11 +34,11 @@ const Container = styled.div`
 	}  
 `;
 
-export default function Main({ children }) {
+export default function Main(props: { children: any }) {
   return (
     <Container>
         <div className="logo" />
-        {children}
+        {props.children}
     </Container>
   );
 }

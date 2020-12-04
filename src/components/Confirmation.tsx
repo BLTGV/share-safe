@@ -7,10 +7,10 @@ const Container = styled.div`
   transition: all 0.5s ease;
 `;
 
-export default function Confirmation({ className, children }) {
+export default function Confirmation(props: { children: any, className?: string }) {
   return (
-    <Container className={`confirmation ${className}`.trim()}>
-      ✓ {children}
+    <Container className={`confirmation ${props.className}`.trim()}>
+      ✓ {props.children}
     </Container>
   );
 }

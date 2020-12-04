@@ -8,6 +8,8 @@ import Copy from "../../components/Copy";
 
 import Context from "./_context";
 import Base from "../_layout";
+import { ProgressFlags } from "./_interfaces"
+
 import Step1 from "./Step1";
 import Step2 from "./Step2";
 
@@ -70,7 +72,7 @@ export default function Main() {
   const [encodedMessage, setEncodedMessage] = useState("");
   const [decodedMessage, setDecodedMessage] = useState("");
 
-  const progressFlags = {
+  const progressFlags: ProgressFlags = {
     urlCopied: urlCopied,
     encodedMessagePasted: encodedMessagePasted,
     encodedMessageDecoded: encodedMessageDecoded,

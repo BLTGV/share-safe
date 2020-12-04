@@ -2,6 +2,8 @@ import React, { useEffect, useContext, useRef } from "react";
 import styled from "@emotion/styled";
 
 import Context from "./_context"
+import { ProgressFlags } from "./_interfaces"
+
 import Click from "../../components/ClickTap";
 import Step from "../../components/Step";
 import Confirmation from "../../components/Confirmation";
@@ -138,26 +140,34 @@ const Wrapper = styled.div`
   }
 `;
 
-export default function Step2({ encodedMessage, decodedMessage, onEncodedMessagePasted, onDecodedMessageClicked, onReset }) {
+interface PropType {
+  encodedMessage: string;
+  decodedMessage: string;
+  onEncodedMessagePasted: (m: string) => boolean;
+  onDecodedMessageClicked: () => void;
+  onReset: () => void;
+}
+
+export default function Step2(props: PropType) {
   const handleChange = () => {
     // Do nothing. We are ignoring all inputs on the textarea, except for paste
   };
 
   const handlePaste = () => {
-    if (!onEncodedMessagePasted(encodedMessage)) {
+    if (!props.onEncodedMessagePasted(props.encodedMessage)) {
       // activate error message
     }
   };
 
   const handleCopy = () => {
-    onDecodedMessageClicked();
+    props.onDecodedMessageClicked();
   };
 
   const handleReset = () => {
-    onReset();
+    props.onReset();
   };
 
-  const progress = useContext(Context);
+  const progress = useContext(Context) as ProgressFlags;
 
   let classes = "response";
   classes += progress.encodedMessagePasted ? " encoded-message-pasted" : "";
@@ -165,7 +175,7 @@ export default function Step2({ encodedMessage, decodedMessage, onEncodedMessage
   classes += progress.decodedMessageCopied ? " decoded-message-copied" : "";
   classes = classes.trim();
 
-  const response = useRef(null);
+  const response = useRef(null) as any;
   
   useEffect(() => {
     if (progress.urlCopied && !progress.encodedMessagePasted) 
@@ -176,11 +186,11 @@ export default function Step2({ encodedMessage, decodedMessage, onEncodedMessage
     <Wrapper>
       <Step number="2" title="Paste the response from the secret holder here" className={classes}>
         <div className="textarea-wrapper">
-          <textarea ref={response} value={encodedMessage} onChange={handleChange} onPaste={handlePaste} />
+          <textarea ref={response} value={props.encodedMessage} onChange={handleChange} onPaste={handlePaste} />
         </div>
         <Confirmation className="decoded">Response pasted and decoded</Confirmation>
         <div className="decoded-message" onClick={handleCopy}>
-          <div className="message">{decodedMessage}</div>
+          <div className="message">{props.decodedMessage}</div>
           <Click>to copy the link to your clipboard</Click>
         </div>
         <Confirmation className="copied">Message copied to your clipboard</Confirmation>

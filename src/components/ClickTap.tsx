@@ -32,10 +32,10 @@ const Container = styled.div`
   }
 `;
 
-export default function ClickTap({ children }) {
+export default function ClickTap(props: { children: any }) {
   return (
     <Container className="click-tap">
-      <b><span className="click">Click</span><span className="tap">Tap</span></b> {children}
+      <b><span className="click">Click</span><span className="tap">Tap</span></b> {props.children}
     </Container>
   );
 }

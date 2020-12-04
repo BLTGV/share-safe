@@ -25,15 +25,23 @@ const Container = styled.div`
   }
 `;
 
-export default function Step({ className, onClick, number, title, children } ) {
+interface PropType {
+  number: string;
+  title: string;
+  children: any;
+  className?: string;
+  onClick?: () => void;
+}
+
+export default function Step(props: PropType) {
   let classes = "step";
-  classes = `${classes} ${onClick ? "clickable" : ""}`.trim();
-  classes = `${classes} ${className}`.trim();
+  classes = `${classes} ${props.onClick ? "clickable" : ""}`.trim();
+  classes = `${classes} ${props.className}`.trim();
 
   return (
-    <Container className={classes} onClick={onClick}>
-      <h1><b>Step {number}:</b> {title}</h1>
-      {children}
+    <Container className={classes} onClick={props.onClick}>
+      <h1><b>Step {props.number}:</b> {props.title}</h1>
+      {props.children}
     </Container>
   );
 }
