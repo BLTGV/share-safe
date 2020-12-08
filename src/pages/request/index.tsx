@@ -51,6 +51,21 @@ const Container = styled.div`
 `;
 
 export default function Main() {
+  const [encodedMessage, setEncodedMessage] = useState("");
+  const [decodedMessage, setDecodedMessage] = useState("");
+
+  const [urlCopied, setUrlCopied] = useState(false);
+  const [encodedMessagePasted, setEncodedMessagePasted] = useState(false);
+  const [encodedMessageDecoded, setEncodedMessageDecoded] = useState(false);
+  const [decodedMessageCopied, setDecodedMessageCopied] = useState(false);
+
+  const progressFlags: ProgressFlags = {
+    urlCopied: urlCopied,
+    encodedMessagePasted: encodedMessagePasted,
+    encodedMessageDecoded: encodedMessageDecoded,
+    decodedMessageCopied: decodedMessageCopied
+  };
+
   // const { publicKey, secretKey } = useUserMeta();
   // let meta: SecretMeta = { type: "request", recipientPubKey: publicKey };
   // const { url, encodedMeta, copy, copied } = useMetaCopy(meta);
@@ -63,21 +78,6 @@ export default function Main() {
   // }
 
 	const url = "http://share.blt.sh/s/eyJ0eXBlIjoicmVxdWVzdCIsInJlY2lwaWVudFB1YktleSI6IlpCcDdXUmsyVXRvYUV0MjVrdk9vZ0ZuMHZVZWNSaGVRMzlDekF4eTZDWDA9In0=";	
-
-  const [urlCopied, setUrlCopied] = useState(false);
-  const [encodedMessagePasted, setEncodedMessagePasted] = useState(false);
-  const [encodedMessageDecoded, setEncodedMessageDecoded] = useState(false);
-  const [decodedMessageCopied, setDecodedMessageCopied] = useState(false);
-
-  const [encodedMessage, setEncodedMessage] = useState("");
-  const [decodedMessage, setDecodedMessage] = useState("");
-
-  const progressFlags: ProgressFlags = {
-    urlCopied: urlCopied,
-    encodedMessagePasted: encodedMessagePasted,
-    encodedMessageDecoded: encodedMessageDecoded,
-    decodedMessageCopied: decodedMessageCopied
-  };
 
   const handleUrlClicked = () => {
     Copy(url);
