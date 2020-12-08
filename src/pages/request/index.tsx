@@ -6,8 +6,8 @@ import React, { useState } from "react";
 
 import Copy from "../../components/Copy";
 
-import Context from "./_contexts";
 import Base from "../_layout";
+import { ProgressContext } from "../_contexts"
 import { ProgressFlags } from "./_interfaces"
 
 import Step1 from "./Step1";
@@ -79,6 +79,16 @@ export default function Main() {
 
 	const url = "http://share.blt.sh/s/eyJ0eXBlIjoicmVxdWVzdCIsInJlY2lwaWVudFB1YktleSI6IlpCcDdXUmsyVXRvYUV0MjVrdk9vZ0ZuMHZVZWNSaGVRMzlDekF4eTZDWDA9In0=";	
 
+  const decodeMessage = (m: string): string => {
+    const message = m.replace(url, "");
+
+    // **********************************
+    // Casey, do your decoding magic here
+    // **********************************
+
+    return "Why won't you love me?";
+  };
+
   const handleUrlClicked = () => {
     Copy(url);
 
@@ -93,13 +103,16 @@ export default function Main() {
     setEncodedMessage(m);
     setDecodedMessage("");
 
-    // decode the message
+    const message = decodeMessage(m);
 
-    setEncodedMessageDecoded(true);
-    setDecodedMessage("Why won't you love me?");
-    return true;
-
-    // return false if failed to decode
+    if (message) {
+      setEncodedMessageDecoded(true);
+      setDecodedMessage("Why won't you love me?");
+      return true;  
+    }
+    else {
+      return false;
+    }
   };
 
   const handleDecodedMessageClicked = () => {
@@ -127,7 +140,7 @@ export default function Main() {
 
   return (
     <Base>
-      <Context.Provider value={progressFlags}>
+      <ProgressContext.Provider value={progressFlags}>
         <Container className={classes}>
           <Step1  url={url} 
                   onUrlClicked={handleUrlClicked} />
@@ -137,7 +150,7 @@ export default function Main() {
                   onDecodedMessageClicked={handleDecodedMessageClicked} 
                   onReset={handleReset} />
         </Container>
-      </Context.Provider>
+      </ProgressContext.Provider>
     </Base>
   );
 }

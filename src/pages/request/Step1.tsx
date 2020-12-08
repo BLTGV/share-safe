@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import styled from "@emotion/styled";
 
-import Context from "./_contexts"
+import { ProgressContext } from "../_contexts"
 import { ProgressFlags } from "./_interfaces"
 
 import Click from "../../components/ClickTap";
@@ -57,7 +57,7 @@ interface PropType {
 }
 
 export default function Step1(props: PropType) {
-  const progress = useContext(Context) as ProgressFlags;
+  const progress = useContext(ProgressContext) as ProgressFlags;
 
   let classes = "request";
   classes += progress.urlCopied ? " url-copied" : "";

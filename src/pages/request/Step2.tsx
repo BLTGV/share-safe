@@ -1,7 +1,7 @@
 import React, { useEffect, useContext, useRef } from "react";
 import styled from "@emotion/styled";
 
-import Context from "./_contexts"
+import { ProgressContext } from "../_contexts"
 import { ProgressFlags } from "./_interfaces"
 
 import Click from "../../components/ClickTap";
@@ -18,7 +18,7 @@ const Wrapper = styled.div`
       textarea {
         margin-top: 10px;
         width: 100%;
-        height: calc(20px + 0.75rem);
+        height: calc(20px + 1rem);
         padding: 10px 20px;
         border: 0;
         border-radius: 5px;
@@ -26,6 +26,7 @@ const Wrapper = styled.div`
         color: #fff;
         font-family: Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
         font-size: 0.75rem;
+        line-height: 1rem;
         resize: none;
         overflow: hidden;
       } 
@@ -159,15 +160,7 @@ export default function Step2(props: PropType) {
     }
   };
 
-  const handleCopy = () => {
-    props.onDecodedMessageClicked();
-  };
-
-  const handleReset = () => {
-    props.onReset();
-  };
-
-  const progress = useContext(Context) as ProgressFlags;
+  const progress = useContext(ProgressContext) as ProgressFlags;
 
   let classes = "response";
   classes += progress.encodedMessagePasted ? " encoded-message-pasted" : "";
@@ -189,12 +182,12 @@ export default function Step2(props: PropType) {
           <textarea ref={response} value={props.encodedMessage} onChange={handleChange} onPaste={handlePaste} />
         </div>
         <Confirmation className="decoded">Response pasted and decoded</Confirmation>
-        <div className="decoded-message" onClick={handleCopy}>
+        <div className="decoded-message" onClick={props.onDecodedMessageClicked}>
           <div className="message">{props.decodedMessage}</div>
           <Click>to copy the link to your clipboard</Click>
         </div>
         <Confirmation className="copied">Message copied to your clipboard</Confirmation>
-        <div className="reset" onClick={handleReset}>Got another response to decode? <Click>here</Click></div>
+        <div className="reset" onClick={props.onReset}>Got another response to decode? <Click>here</Click></div>
       </Step>
     </Wrapper>
   );
