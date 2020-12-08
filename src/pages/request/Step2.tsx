@@ -1,7 +1,7 @@
 import React, { useEffect, useContext, useRef } from "react";
 import styled from "@emotion/styled";
 
-import Context from "./_context"
+import Context from "./_contexts"
 import { ProgressFlags } from "./_interfaces"
 
 import Click from "../../components/ClickTap";
