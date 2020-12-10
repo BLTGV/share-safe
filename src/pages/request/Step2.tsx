@@ -150,12 +150,8 @@ interface PropType {
 }
 
 export default function Step2(props: PropType) {
-  const handleChange = () => {
-    // Do nothing. We are ignoring all inputs on the textarea, except for paste
-  };
-
-  const handlePaste = () => {
-    if (!props.onEncodedMessagePasted(props.encodedMessage)) {
+  const handleChange = (e: React.FormEvent<HTMLTextAreaElement>) => {
+    if (!props.onEncodedMessagePasted(e.currentTarget.value)) {
       // activate error message
     }
   };
@@ -179,7 +175,7 @@ export default function Step2(props: PropType) {
     <Wrapper>
       <Step number="2" title="Paste the response from the secret holder here" className={classes}>
         <div className="textarea-wrapper">
-          <textarea ref={response} value={props.encodedMessage} onChange={handleChange} onPaste={handlePaste} />
+          <textarea ref={response} value={props.encodedMessage} onChange={handleChange} />
         </div>
         <Confirmation className="decoded">Response pasted and decoded</Confirmation>
         <div className="decoded-message" onClick={props.onDecodedMessageClicked}>

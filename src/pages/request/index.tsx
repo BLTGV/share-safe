@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-// import useCopy from "@react-hook/copy";
-// import { useUserMeta, SecretMeta, decode, ParamsMeta, useMetaCopy } from "../../util";
-// import { useParams } from "react-router-dom";
+import { getRequestMeta, ResponseMetaType, cryptoDecode } from "../../libraries/PersistedCrypto";
 
 import Copy from "../../components/Copy";
 
@@ -66,28 +64,10 @@ export default function Main() {
     decodedMessageCopied: decodedMessageCopied
   };
 
-  // const { publicKey, secretKey } = useUserMeta();
-  // let meta: SecretMeta = { type: "request", recipientPubKey: publicKey };
-  // const { url, encodedMeta, copy, copied } = useMetaCopy(meta);
-  // const isYours = publicKey === meta.recipientPubKey;
-
-  // const { meta: metaEncoded } = useParams<ParamsMeta>();
-
-  // if(metaEncoded) {
-  //   meta = decode(metaEncoded);
-  // }
-
-	const url = "http://share.blt.sh/s/eyJ0eXBlIjoicmVxdWVzdCIsInJlY2lwaWVudFB1YktleSI6IlpCcDdXUmsyVXRvYUV0MjVrdk9vZ0ZuMHZVZWNSaGVRMzlDekF4eTZDWDA9In0=";	
-
-  const decodeMessage = (m: string): string => {
-    const message = m.replace(url, "");
-
-    // **********************************
-    // Casey, do your decoding magic here
-    // **********************************
-
-    return "Why won't you love me?";
-  };
+  const host = window.origin;
+  const branch = "/s/";
+  const params = btoa(JSON.stringify(getRequestMeta()));
+  const url = `${host}${branch}${params}`;
 
   const handleUrlClicked = () => {
     Copy(url);
@@ -96,18 +76,32 @@ export default function Main() {
   };
 
   const handleEncodedMessagePasted = (m: string) => {
+    console.log(`Pasted: ${m}`);
     setEncodedMessagePasted(true);
     setEncodedMessageDecoded(false);
     setDecodedMessageCopied(false);
 
-    setEncodedMessage(m);
+    setEncodedMessage("");
     setDecodedMessage("");
 
-    const message = decodeMessage(m);
+    const host = window.origin;
+    const branch = "/";
+
+    let encodedParams = m;
+    encodedParams = encodedParams.replace(host, "");
+    encodedParams = encodedParams.replace(branch, "");
+
+    if (!encodedParams) return false;
+
+    const decodedParams = JSON.parse(atob(encodedParams)) as ResponseMetaType;
+
+    setEncodedMessage(decodedParams.message);
+
+    const message = cryptoDecode(decodedParams);
 
     if (message) {
       setEncodedMessageDecoded(true);
-      setDecodedMessage("Why won't you love me?");
+      setDecodedMessage(message);
       return true;  
     }
     else {
@@ -130,6 +124,13 @@ export default function Main() {
     setEncodedMessage("");
     setDecodedMessage("");
   };
+
+  useEffect(() => {
+    if (handleEncodedMessagePasted(window.location.href))
+      setUrlCopied(true);
+    else
+      setEncodedMessagePasted(false);
+  }, []);
 
   let classes = "";
   classes += urlCopied ? " url-copied" : "";

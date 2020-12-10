@@ -1,8 +1,6 @@
 import React, { useState, useRef } from "react";
 
-// import useCopy from "@react-hook/copy";
-// import { useUserMeta, SecretMeta, decode, ParamsMeta, useMetaCopy } from "../../util";
-// import { useParams } from "react-router-dom";
+import { getResponseMeta, RequestMetaType, cryptoEncode } from "../../libraries/PersistedCrypto";
 
 import Copy from "../../components/Copy";
 
@@ -58,27 +56,6 @@ export default function Main() {
     urlCopied: urlCopied
   };
 
-  // const { publicKey, secretKey } = useUserMeta();
-  // let meta: SecretMeta = { type: "request", recipientPubKey: publicKey };
-  // const { url, encodedMeta, copy, copied } = useMetaCopy(meta);
-  // const isYours = publicKey === meta.recipientPubKey;
-
-  // const { meta: metaEncoded } = useParams<ParamsMeta>();
-
-  // if(metaEncoded) {
-  //   meta = decode(metaEncoded);
-  // }
-
-	const url = "http://share.blt.sh/s/eyJ0eXBlIjoicmVxdWVzdCIsInJlY2lwaWVudFB1YktleSI6IlpCcDdXUmsyVXRvYUV0MjVrdk9vZ0ZuMHZVZWNSaGVRMzlDekF4eTZDWDA9In0=";	
-
-  const encodeMessage = (m: string): string => {
-    // **********************************
-    // Casey, do your encoding magic here
-    // **********************************
-
-    return encodeURI(m);
-  };
-
   let inputTimeout = useRef(0);
   let inputValue = useRef("");
 
@@ -99,17 +76,24 @@ export default function Main() {
         setHasInput(true);
         setAwaitingInputCompletion(false);
 
-        const message = encodeMessage(value);
+        const branch = "/s/";
+        const encodedParams = window.location.pathname.replace(branch, "");
+    
+        if (!encodedParams) return false; // This should never happen. By now, the validity of the URL should have been already confirmed
+    
+        const requestParams = JSON.parse(atob(encodedParams)) as RequestMetaType;
+        
+        const responseParams = getResponseMeta();
+        responseParams.message = value;
+        responseParams.requestKey = requestParams.requestKey;
+        
+        responseParams.message = cryptoEncode(responseParams);
 
-        if (message) {
-          setInputEncoded(true); 
-          setEncodedMessage(message);
-          setResponseUrl(`${url}${message}`);  
-        }
-        else {
-          // TODO: error catching 
-          // This really should never happen, though...
-        }  
+        setInputEncoded(true); 
+        setEncodedMessage(responseParams.message);
+
+        const params = btoa(JSON.stringify(responseParams));
+        setResponseUrl(`${window.origin}/${params}`);  
       }
     }, 1000);
   };

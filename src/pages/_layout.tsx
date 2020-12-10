@@ -20,7 +20,7 @@ const Container = styled.div`
 		position: fixed;
 		top: 0px;
 		left: 0px;
-		background-image: url("./logos/BLT Safe Share.svg");
+		background-image: url("/logos/BLT Safe Share.svg");
 		background-repeat: no-repeat;
 		background-position: 50px 30px;
 		background-size: auto 20px;
