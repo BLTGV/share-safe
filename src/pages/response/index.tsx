@@ -41,6 +41,8 @@ const Container = styled.div`
 
 export default function Main() {
   const [enteredMessage, setEnteredMessage] = useState("");
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [encodedMessage, setEncodedMessage] = useState("");
   const [responseUrl, setResponseUrl] = useState("");
 
