@@ -8,7 +8,7 @@ const getCryptoKeys = () => {
   if (localStorage.getItem(storageID)) {
     meta = JSON.parse(localStorage.getItem(storageID) as string);
 
-    if (meta.time < (Date.now() - 1000 * 60 * 60))
+    if (meta.time < (Date.now() - 1000 * 60 * 5))
       meta = null;
     else
       meta.time = Date.now();
@@ -34,6 +34,11 @@ const getCryptoKeys = () => {
 export interface RequestMetaType {
   message: string,
   requestKey: string
+}
+
+export const refreshCryptoKeys = () => {
+  console.log("Crypto keys refreshed");
+  getCryptoKeys();
 }
 
 export const getRequestMeta = (): RequestMetaType => {

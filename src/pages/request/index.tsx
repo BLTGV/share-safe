@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { getRequestMeta, ResponseMetaType, cryptoDecode } from "../../libraries/PersistedCrypto";
+import { refreshCryptoKeys, getRequestMeta, ResponseMetaType, cryptoDecode } from "../../libraries/PersistedCrypto";
 
 import Copy from "../../components/Copy";
 
@@ -56,12 +56,14 @@ export default function Main() {
   const [encodedMessagePasted, setEncodedMessagePasted] = useState(false);
   const [encodedMessageDecoded, setEncodedMessageDecoded] = useState(false);
   const [decodedMessageCopied, setDecodedMessageCopied] = useState(false);
+  const [decodingErred, setDecodingErred] = useState(false);
 
   const progressFlags: ProgressFlags = {
     urlCopied: urlCopied,
     encodedMessagePasted: encodedMessagePasted,
     encodedMessageDecoded: encodedMessageDecoded,
-    decodedMessageCopied: decodedMessageCopied
+    decodedMessageCopied: decodedMessageCopied,
+    decodingErred: decodingErred
   };
 
   const host = window.origin;
@@ -76,10 +78,10 @@ export default function Main() {
   };
 
   const handleEncodedMessagePasted = (m: string) => {
-    console.log(`Pasted: ${m}`);
-    setEncodedMessagePasted(true);
+    setEncodedMessagePasted(false);
     setEncodedMessageDecoded(false);
     setDecodedMessageCopied(false);
+    setDecodingErred(false);
 
     setEncodedMessage("");
     setDecodedMessage("");
@@ -93,18 +95,26 @@ export default function Main() {
 
     if (!encodedParams) return false;
 
-    const decodedParams = JSON.parse(atob(encodedParams)) as ResponseMetaType;
+    try {
+      const decodedParams = JSON.parse(atob(encodedParams)) as ResponseMetaType;
 
-    setEncodedMessage(decodedParams.message);
+      setEncodedMessage(decodedParams.message);
 
-    const message = cryptoDecode(decodedParams);
+      const message = cryptoDecode(decodedParams);
 
-    if (message) {
-      setEncodedMessageDecoded(true);
-      setDecodedMessage(message);
-      return true;  
-    }
-    else {
+      if (message) {
+        setEncodedMessagePasted(true);
+        setEncodedMessageDecoded(true);
+        setDecodedMessage(message);
+        return true;  
+      }
+      else {
+        setEncodedMessage("");
+        return false;
+      }
+    } catch {
+      setEncodedMessage(m);
+      setDecodingErred(true);
       return false;
     }
   };
@@ -120,6 +130,7 @@ export default function Main() {
     setEncodedMessagePasted(false);
     setEncodedMessageDecoded(false);
     setDecodedMessageCopied(false);
+    setDecodingErred(false);
 
     setEncodedMessage("");
     setDecodedMessage("");
@@ -132,11 +143,17 @@ export default function Main() {
       setEncodedMessagePasted(false);
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(refreshCryptoKeys, 1000 * 60);
+    return () => clearInterval(interval);
+  });
+
   let classes = "";
   classes += urlCopied ? " url-copied" : "";
   classes += encodedMessagePasted ? " encoded-message-pasted" : "";
   classes += encodedMessageDecoded ? " encoded-message-decoded" : "";
   classes += decodedMessageCopied ? " decoded-message-copied" : "";
+  classes += decodingErred ? " decoding-erred" : "";
   classes = classes.trim();
 
   return (

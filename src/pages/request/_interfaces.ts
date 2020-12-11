@@ -3,4 +3,5 @@ export interface ProgressFlags {
   encodedMessagePasted: boolean;
   encodedMessageDecoded: boolean;
   decodedMessageCopied: boolean;
+  decodingErred: boolean;
 }

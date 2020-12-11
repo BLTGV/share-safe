@@ -38,6 +38,12 @@ const Wrapper = styled.div`
       overflow: hidden;
     }
 
+    &.decoding-erred .textarea-wrapper {
+      opacity: 0;
+      height: 0;
+      overflow: hidden;
+    }
+
     .confirmation.decoded {
       display: none;
     }
@@ -95,6 +101,32 @@ const Wrapper = styled.div`
       transition: opacity 0.5s ease;
     }
 
+    .decoding-error {
+      display: none;
+      opacity: 0;
+      border-radius: 5px;
+      padding: 10px 20px 20px 20px;
+      margin: 12px -7px;
+      color: #fff;
+      background-color: #772d2d;
+      transition: all 0.5s ease;
+
+      h2 {
+        font-size: 1rem;
+        font-weight: normal;
+      }
+
+      .pasted-response {
+        font-size: 0.75rem;
+        word-break: break-all;
+      }
+    }
+
+    &.decoding-erred .decoding-error {
+      display: block;
+      opacity: 1;
+    }
+
     .reset {
       display: none;
       opacity: 0;
@@ -104,6 +136,10 @@ const Wrapper = styled.div`
 
       @media screen and (max-width: 1000px) {
         margin-top: 20px;
+
+        & + .reset {
+          margin-top: 0px;
+        }
       }
 
       &:hover {
@@ -138,6 +174,11 @@ const Wrapper = styled.div`
       display: block;
       opacity: 1;
     }
+
+    &.decoding-erred .reset {
+      display: block;
+      opacity: 1;
+    }
   }
 `;
 
@@ -162,6 +203,7 @@ export default function Step2(props: PropType) {
   classes += progress.encodedMessagePasted ? " encoded-message-pasted" : "";
   classes += progress.encodedMessageDecoded ? " encoded-message-decoded" : "";
   classes += progress.decodedMessageCopied ? " decoded-message-copied" : "";
+  classes += progress.decodingErred ? " decoding-erred" : "";
   classes = classes.trim();
 
   const response = useRef(null) as any;
@@ -177,13 +219,18 @@ export default function Step2(props: PropType) {
         <div className="textarea-wrapper">
           <textarea ref={response} value={props.encodedMessage} onChange={handleChange} />
         </div>
-        <Confirmation className="decoded">Response pasted and decoded</Confirmation>
+        <Confirmation className="decoded">Response pasted and decrypted</Confirmation>
         <div className="decoded-message" onClick={props.onDecodedMessageClicked}>
           <div className="message">{props.decodedMessage}</div>
-          <Click>to copy the link to your clipboard</Click>
+          <Click>to copy the message to your clipboard</Click>
         </div>
         <Confirmation className="copied">Message copied to your clipboard</Confirmation>
-        <div className="reset" onClick={props.onReset}>Got another response to decode? <Click>here</Click></div>
+        <div className="decoding-error">
+          <h2>The response cannot be decrypted. Please check to make sure it is identical to what was sent to you:</h2>
+          <div className="pasted-response">{props.encodedMessage}</div>
+        </div>
+        <div className="reset" onClick={props.onReset}>Got another response to decrypt? <Click>here</Click></div>
+        <div className="reset" onClick={() => { window.location.href = window.origin; }}>Start over completely? <Click>here</Click></div>
       </Step>
     </Wrapper>
   );
