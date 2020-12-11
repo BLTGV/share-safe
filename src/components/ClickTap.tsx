@@ -3,7 +3,6 @@ import styled from "@emotion/styled";
 
 const Container = styled.div`
   font-size: 1rem;
-  padding-top: 20px;
   transition: all 0.5s ease;
 
   @media screen and (max-width: 1000px) {

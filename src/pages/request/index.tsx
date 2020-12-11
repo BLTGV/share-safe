@@ -56,6 +56,7 @@ export default function Main() {
   const [encodedMessagePasted, setEncodedMessagePasted] = useState(false);
   const [encodedMessageDecoded, setEncodedMessageDecoded] = useState(false);
   const [decodedMessageCopied, setDecodedMessageCopied] = useState(false);
+  const [keyMismatched, setKeyMismatched] = useState(false);
   const [decodingErred, setDecodingErred] = useState(false);
 
   const progressFlags: ProgressFlags = {
@@ -63,6 +64,7 @@ export default function Main() {
     encodedMessagePasted: encodedMessagePasted,
     encodedMessageDecoded: encodedMessageDecoded,
     decodedMessageCopied: decodedMessageCopied,
+    keyMismatched: keyMismatched,
     decodingErred: decodingErred
   };
 
@@ -81,6 +83,7 @@ export default function Main() {
     setEncodedMessagePasted(false);
     setEncodedMessageDecoded(false);
     setDecodedMessageCopied(false);
+    setKeyMismatched(false);
     setDecodingErred(false);
 
     setEncodedMessage("");
@@ -95,8 +98,16 @@ export default function Main() {
 
     if (!encodedParams) return false;
 
+    setUrlCopied(true);
+
     try {
       const decodedParams = JSON.parse(atob(encodedParams)) as ResponseMetaType;
+
+      if (getRequestMeta().requestKey !== decodedParams.requestKey) {
+        setEncodedMessage(m);
+        setKeyMismatched(true);
+        return false;
+      }
 
       setEncodedMessage(decodedParams.message);
 
@@ -137,10 +148,7 @@ export default function Main() {
   };
 
   useEffect(() => {
-    if (handleEncodedMessagePasted(window.location.href))
-      setUrlCopied(true);
-    else
-      setEncodedMessagePasted(false);
+    handleEncodedMessagePasted(window.location.href);
   }, []);
 
   useEffect(() => {
@@ -153,6 +161,7 @@ export default function Main() {
   classes += encodedMessagePasted ? " encoded-message-pasted" : "";
   classes += encodedMessageDecoded ? " encoded-message-decoded" : "";
   classes += decodedMessageCopied ? " decoded-message-copied" : "";
+  classes += keyMismatched ? " key-mismatched" : "";
   classes += decodingErred ? " decoding-erred" : "";
   classes = classes.trim();
 

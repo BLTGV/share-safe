@@ -38,10 +38,13 @@ const Wrapper = styled.div`
       overflow: hidden;
     }
 
-    &.decoding-erred .textarea-wrapper {
-      opacity: 0;
-      height: 0;
-      overflow: hidden;
+    &.key-mismatched,
+    &.decoding-erred {
+     .textarea-wrapper {
+        opacity: 0;
+        height: 0;
+        overflow: hidden;
+      }
     }
 
     .confirmation.decoded {
@@ -101,30 +104,46 @@ const Wrapper = styled.div`
       transition: opacity 0.5s ease;
     }
 
-    .decoding-error {
+    .error {
       display: none;
       opacity: 0;
       border-radius: 5px;
-      padding: 10px 20px 20px 20px;
+      padding: 10px 20px;
       margin: 12px -7px;
       color: #fff;
       background-color: #772d2d;
       transition: all 0.5s ease;
 
       h2 {
+        display: none;
         font-size: 1rem;
         font-weight: normal;
       }
 
       .pasted-response {
+        display: none;
         font-size: 0.75rem;
         word-break: break-all;
+        padding-bottom: 10px;
       }
     }
 
-    &.decoding-erred .decoding-error {
+    &.decoding-erred .error {
       display: block;
       opacity: 1;
+
+      .decoding-error {
+        display: block;
+      }
+    }
+
+    &.key-mismatched .error {
+      display: block;
+      opacity: 1;
+
+      .key-error {
+        display: block;
+      }
     }
 
     .reset {
@@ -165,19 +184,14 @@ const Wrapper = styled.div`
       }
     }
   
-    &.encoded-message-decoded .reset {
-      display: block;
-      opacity: 1;
-    }
-
-    &.decoded-message-copied .reset {
-      display: block;
-      opacity: 1;
-    }
-
-    &.decoding-erred .reset {
-      display: block;
-      opacity: 1;
+    &.encoded-message-decoded,
+    &.decoded-message-copied,
+    &.key-mismatched,
+    &.decoding-erred { 
+      .reset {
+        display: block;
+        opacity: 1;
+      }
     }
   }
 `;
@@ -203,6 +217,7 @@ export default function Step2(props: PropType) {
   classes += progress.encodedMessagePasted ? " encoded-message-pasted" : "";
   classes += progress.encodedMessageDecoded ? " encoded-message-decoded" : "";
   classes += progress.decodedMessageCopied ? " decoded-message-copied" : "";
+  classes += progress.keyMismatched ? " key-mismatched" : "";
   classes += progress.decodingErred ? " decoding-erred" : "";
   classes = classes.trim();
 
@@ -225,9 +240,10 @@ export default function Step2(props: PropType) {
           <Click>to copy the message to your clipboard</Click>
         </div>
         <Confirmation className="copied">Message copied to your clipboard</Confirmation>
-        <div className="decoding-error">
-          <h2>The response cannot be decrypted. Please check to make sure it is identical to what was sent to you:</h2>
-          <div className="pasted-response">{props.encodedMessage}</div>
+        <div className="error">
+          <h2 className="key-error">Please paste this response to where you sent the original request. If this is the correct place, then the response window has expired. You will need to resend the request link to the secret holder by selecting "Start over completely" below.</h2>
+          <h2 className="decoding-error">This response cannot be decrypted. Please check to make sure it is identical to what was sent to you:</h2>
+          <div className="decoding-error pasted-response">{props.encodedMessage}</div>
         </div>
         <div className="reset" onClick={props.onReset}>Got another response to decrypt? <Click>here</Click></div>
         <div className="reset" onClick={() => { window.location.href = window.origin; }}>Start over completely? <Click>here</Click></div>
