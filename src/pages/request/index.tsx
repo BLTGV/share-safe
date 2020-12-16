@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { refreshCryptoKeys, getRequestMeta, ResponseMetaType, cryptoDecode } from "../../libraries/PersistedCrypto";
+import { refreshCryptoKeys, getRequestMeta, ResponseMetaType, cryptoDecode } from "../../utils/persistedCrypto";
 
 import Copy from "../../components/Copy";
 
@@ -98,7 +98,7 @@ export default function Main() {
 
     if (!encodedParams) return false;
 
-    setUrlCopied(true);
+    setUrlCopied(true); // This should already be true, unless we are loading the response URL. Setting it true here explicitly just to be sure
 
     try {
       const decodedParams = JSON.parse(atob(encodedParams)) as ResponseMetaType;
@@ -121,7 +121,7 @@ export default function Main() {
       }
       else {
         setEncodedMessage("");
-        return false;
+        return false; // It was technically a valid message. However, since we don't allow blank messages to be sent, getting a blank message means something must have went wrong. Not setting an error code, but also not returning as a success
       }
     } catch {
       setEncodedMessage(m);
@@ -138,21 +138,23 @@ export default function Main() {
   };
 
   const handleReset = () => {
+    setEncodedMessage("");
+    setDecodedMessage("");
+
+    setUrlCopied(true); // Since we are resetting to decrypt another message using the same keys, we don't have to go back to step 1
     setEncodedMessagePasted(false);
     setEncodedMessageDecoded(false);
     setDecodedMessageCopied(false);
+    setKeyMismatched(false);
     setDecodingErred(false);
-
-    setEncodedMessage("");
-    setDecodedMessage("");
   };
 
   useEffect(() => {
-    handleEncodedMessagePasted(window.location.href);
+    handleEncodedMessagePasted(window.location.href); // Before anything, check the URL to see if it is a response URL
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(refreshCryptoKeys, 1000 * 60);
+    const interval = setInterval(refreshCryptoKeys, 1000 * 60); // We will keep the keys alive, one minute at a time, as long as the page is open
     return () => clearInterval(interval);
   });
 

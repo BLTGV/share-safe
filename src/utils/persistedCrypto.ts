@@ -1,4 +1,4 @@
-import { encryptSecret, decryptSecret, generateKeyPair } from "./Crypto";
+import { encryptSecret, decryptSecret, generateKeyPair } from "./crypto";
 
 const getCryptoKeys = () => {
   const storageID = "Crypto Keys";

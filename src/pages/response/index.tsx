@@ -1,6 +1,6 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
-import { getResponseMeta, RequestMetaType, cryptoEncode } from "../../libraries/PersistedCrypto";
+import { getResponseMeta, RequestMetaType, cryptoEncode, getRequestMeta } from "../../utils/persistedCrypto";
 
 import Copy from "../../components/Copy";
 
@@ -16,7 +16,17 @@ import styled from "@emotion/styled";
 const Container = styled.div`
   padding-top: 0.1px;
 
-  .input {
+  .request-error {
+    display: none;
+    margin-top: 45vh;
+    text-align: center;
+  }
+
+  &.invalid-request .request-error {
+    display: block;
+  }
+
+  .step.input {
     margin-top: 25vh;
     transition: margin-top 1s ease;
 
@@ -29,7 +39,7 @@ const Container = styled.div`
     }
   }
 
-  .response {
+  .step.response {
     margin-top: 50px;
     margin-bottom: 20vh;
 
@@ -37,15 +47,28 @@ const Container = styled.div`
       margin-top: 20px;
     }
   }
+
+  &.invalid-request .step {
+    display: none;
+  }
 `;
+
+const getRequestParams = (): RequestMetaType => {
+  const branch = "/s/";
+  const encodedParams = window.location.pathname.replace(branch, "");
+
+  if (!encodedParams)
+    throw new Error("Request params missing");
+
+  return JSON.parse(atob(encodedParams)) as RequestMetaType;
+};
 
 export default function Main() {
   const [enteredMessage, setEnteredMessage] = useState("");
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [encodedMessage, setEncodedMessage] = useState("");
   const [responseUrl, setResponseUrl] = useState("");
 
+  const [isRequestInvalid, setIsRequestInvalid] = useState(false);
   const [hasInput, setHasInput] = useState(false);
   const [awaitingInputCompletion, setAwaitingInputCompletion] = useState(true);
   const [inputEncoded, setInputEncoded] = useState(false);
@@ -58,41 +81,43 @@ export default function Main() {
     urlCopied: urlCopied
   };
 
+  useEffect(() => {
+    try {
+      getRequestParams();
+    } catch {
+      setIsRequestInvalid(true);
+    }  
+  }, []);
+
   let inputTimeout = useRef(0);
   let inputValue = useRef("");
 
   const handleInputChanged = (e: React.FormEvent<HTMLTextAreaElement>) => {
-    inputValue.current = e.currentTarget.value;
+    inputValue.current = e.currentTarget.value; // We cannot rely on enteredMessage state, because it is changed asynchronously and we might not get the most up to date state when we need it. Therefore, we will maintain the latest input in a reference hook during this input delay
     setEnteredMessage(inputValue.current);
 
     window.clearTimeout(inputTimeout.current);
-    setHasInput(false);
+    setHasInput(false); // The user can delete the entered message. We will mark this as false for now and check for it after the input delay
     setAwaitingInputCompletion(true);
     setInputEncoded(false);
     setUrlCopied(false);
 
-    inputTimeout.current = window.setTimeout(() => {
+    inputTimeout.current = window.setTimeout(() => { // We are not processing the input immediately. We will wait until the user has finished typing (at least 1 second of no activity)
       const value = inputValue.current;
 
       if (value) {
         setHasInput(true);
         setAwaitingInputCompletion(false);
 
-        const branch = "/s/";
-        const encodedParams = window.location.pathname.replace(branch, "");
-    
-        if (!encodedParams) return false; // This should never happen. By now, the validity of the URL should have been already confirmed
-    
-        const requestParams = JSON.parse(atob(encodedParams)) as RequestMetaType;
-        
+        const requestParams = getRequestParams();
         const responseParams = getResponseMeta();
+
         responseParams.message = value;
         responseParams.requestKey = requestParams.requestKey;
         
         responseParams.message = cryptoEncode(responseParams);
 
         setInputEncoded(true); 
-        setEncodedMessage(responseParams.message);
 
         const params = btoa(JSON.stringify(responseParams));
         setResponseUrl(`${window.origin}/${params}`);  
@@ -109,6 +134,7 @@ export default function Main() {
   };
 
   let classes = "";
+  classes += isRequestInvalid ? " invalid-request" : "";
   classes += hasInput ? " has-input" : "";
   classes += awaitingInputCompletion ? " awaiting-input-completion" : "";
   classes += inputEncoded ? " input-encoded" : "";
@@ -119,6 +145,7 @@ export default function Main() {
     <Base>
       <ProgressContext.Provider value={progressFlags}>
         <Container className={classes}>
+          <div className="request-error">The link you are using is invalid. Please ask the requester to send you the link again.</div>
           <Step1  value={enteredMessage} 
                   onInputChanged={handleInputChanged} />
           <Step2  responseUrl={responseUrl} 
