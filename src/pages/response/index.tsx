@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 
-import { getResponseMeta, RequestMetaType, cryptoEncode, getRequestMeta } from "../../utils/persistedCrypto";
+import { getResponseMeta, RequestMetaType, cryptoEncode } from "../../utils/persistedCrypto";
 
 import Copy from "../../components/Copy";
 
@@ -70,15 +70,15 @@ export default function Main() {
 
   const [isRequestInvalid, setIsRequestInvalid] = useState(false);
   const [hasInput, setHasInput] = useState(false);
-  const [awaitingInputCompletion, setAwaitingInputCompletion] = useState(true);
-  const [inputEncoded, setInputEncoded] = useState(false);
-  const [urlCopied, setUrlCopied] = useState(false);
+  const [isAwaitingInputCompletion, setIsAwaitingInputCompletion] = useState(true);
+  const [isInputEncoded, setIsInputEncoded] = useState(false);
+  const [isUrlCopied, setIsUrlCopied] = useState(false);
 
   const progressFlags: ProgressFlags = {
     hasInput: hasInput,
-    awaitingInputCompletion: awaitingInputCompletion,
-    inputEncoded: inputEncoded,
-    urlCopied: urlCopied
+    isAwaitingInputCompletion: isAwaitingInputCompletion,
+    isInputEncoded: isInputEncoded,
+    isUrlCopied: isUrlCopied
   };
 
   useEffect(() => {
@@ -98,16 +98,16 @@ export default function Main() {
 
     window.clearTimeout(inputTimeout.current);
     setHasInput(false); // The user can delete the entered message. We will mark this as false for now and check for it after the input delay
-    setAwaitingInputCompletion(true);
-    setInputEncoded(false);
-    setUrlCopied(false);
+    setIsAwaitingInputCompletion(true);
+    setIsInputEncoded(false);
+    setIsUrlCopied(false);
 
     inputTimeout.current = window.setTimeout(() => { // We are not processing the input immediately. We will wait until the user has finished typing (at least 1 second of no activity)
       const value = inputValue.current;
 
       if (value) {
         setHasInput(true);
-        setAwaitingInputCompletion(false);
+        setIsAwaitingInputCompletion(false);
 
         const requestParams = getRequestParams();
         const responseParams = getResponseMeta();
@@ -117,7 +117,7 @@ export default function Main() {
         
         responseParams.message = cryptoEncode(responseParams);
 
-        setInputEncoded(true); 
+        setIsInputEncoded(true); 
 
         const params = btoa(JSON.stringify(responseParams));
         setResponseUrl(`${window.origin}/${params}`);  
@@ -126,19 +126,19 @@ export default function Main() {
   };
 
   const handleResponseUrlClicked = () => {
-    if (awaitingInputCompletion) return;
+    if (isAwaitingInputCompletion) return;
 
     Copy(responseUrl);
 
-    setUrlCopied(true);
+    setIsUrlCopied(true);
   };
 
   let classes = "";
   classes += isRequestInvalid ? " invalid-request" : "";
   classes += hasInput ? " has-input" : "";
-  classes += awaitingInputCompletion ? " awaiting-input-completion" : "";
-  classes += inputEncoded ? " input-encoded" : "";
-  classes += urlCopied ? " url-copied" : "";
+  classes += isAwaitingInputCompletion ? " awaiting-input-completion" : "";
+  classes += isInputEncoded ? " input-encoded" : "";
+  classes += isUrlCopied ? " url-copied" : "";
   classes = classes.trim();
 
   return (

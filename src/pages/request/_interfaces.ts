@@ -1,8 +1,8 @@
 export interface ProgressFlags {
-  urlCopied: boolean;
-  encodedMessagePasted: boolean;
-  encodedMessageDecoded: boolean;
-  decodedMessageCopied: boolean;
-  keyMismatched: boolean;
-  decodingErred: boolean;
+  isUrlCopied: boolean;
+  isEncodedMessagePasted: boolean;
+  isEncodedMessageDecoded: boolean;
+  isDecodedMessageCopied: boolean;
+  hasKeyMismatched: boolean;
+  hasDecodingErred: boolean;
 }

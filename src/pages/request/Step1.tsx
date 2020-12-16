@@ -60,7 +60,7 @@ export default function Step1(props: PropType) {
   const progress = useContext(ProgressContext) as ProgressFlags;
 
   let classes = "request";
-  classes += progress.urlCopied ? " url-copied" : "";
+  classes += progress.isUrlCopied ? " url-copied" : "";
   classes = classes.trim();
   
   return (

@@ -96,7 +96,7 @@ export default function Step2(props: PropType) {
   const [urlPlaceholder, setUrlPlaceholder] = useState(urlPlaceholderInitialState);
 
   useEffect(() => {
-    if (!progress.awaitingInputCompletion) {
+    if (!progress.isAwaitingInputCompletion) {
       setUrlPlaceholder(urlPlaceholderInitialState);
       return;
     }
@@ -110,13 +110,13 @@ export default function Step2(props: PropType) {
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [progress.awaitingInputCompletion]);
+  }, [progress.isAwaitingInputCompletion]);
 
   let classes = "response";
   classes += progress.hasInput ? " has-input" : "";
-  classes += progress.awaitingInputCompletion ? " awaiting-input-completion" : "";
-  classes += progress.inputEncoded ? " input-encoded" : "";
-  classes += progress.urlCopied ? " url-copied" : "";
+  classes += progress.isAwaitingInputCompletion ? " awaiting-input-completion" : "";
+  classes += progress.isInputEncoded ? " input-encoded" : "";
+  classes += progress.isUrlCopied ? " url-copied" : "";
   classes = classes.trim();
 
   return (

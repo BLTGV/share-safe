@@ -1,6 +1,6 @@
 export interface ProgressFlags {
   hasInput: boolean,
-  awaitingInputCompletion: boolean,
-  inputEncoded: boolean,
-  urlCopied: boolean
+  isAwaitingInputCompletion: boolean,
+  isInputEncoded: boolean,
+  isUrlCopied: boolean
 }

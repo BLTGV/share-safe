@@ -52,20 +52,20 @@ export default function Main() {
   const [encodedMessage, setEncodedMessage] = useState("");
   const [decodedMessage, setDecodedMessage] = useState("");
 
-  const [urlCopied, setUrlCopied] = useState(false);
-  const [encodedMessagePasted, setEncodedMessagePasted] = useState(false);
-  const [encodedMessageDecoded, setEncodedMessageDecoded] = useState(false);
-  const [decodedMessageCopied, setDecodedMessageCopied] = useState(false);
-  const [keyMismatched, setKeyMismatched] = useState(false);
-  const [decodingErred, setDecodingErred] = useState(false);
+  const [isUrlCopied, setIsUrlCopied] = useState(false);
+  const [isEncodedMessagePasted, setIsEncodedMessagePasted] = useState(false);
+  const [isEncodedMessageDecoded, setIsEncodedMessageDecoded] = useState(false);
+  const [isDecodedMessageCopied, setIsDecodedMessageCopied] = useState(false);
+  const [hasKeyMismatched, setHasKeyMismatched] = useState(false);
+  const [hasDecodingErred, setHasDecodingErred] = useState(false);
 
   const progressFlags: ProgressFlags = {
-    urlCopied: urlCopied,
-    encodedMessagePasted: encodedMessagePasted,
-    encodedMessageDecoded: encodedMessageDecoded,
-    decodedMessageCopied: decodedMessageCopied,
-    keyMismatched: keyMismatched,
-    decodingErred: decodingErred
+    isUrlCopied: isUrlCopied,
+    isEncodedMessagePasted: isEncodedMessagePasted,
+    isEncodedMessageDecoded: isEncodedMessageDecoded,
+    isDecodedMessageCopied: isDecodedMessageCopied,
+    hasKeyMismatched: hasKeyMismatched,
+    hasDecodingErred: hasDecodingErred
   };
 
   const host = window.origin;
@@ -76,15 +76,15 @@ export default function Main() {
   const handleUrlClicked = () => {
     Copy(url);
 
-    setUrlCopied(true);
+    setIsUrlCopied(true);
   };
 
   const handleEncodedMessagePasted = (m: string) => {
-    setEncodedMessagePasted(false);
-    setEncodedMessageDecoded(false);
-    setDecodedMessageCopied(false);
-    setKeyMismatched(false);
-    setDecodingErred(false);
+    setIsEncodedMessagePasted(false);
+    setIsEncodedMessageDecoded(false);
+    setIsDecodedMessageCopied(false);
+    setHasKeyMismatched(false);
+    setHasDecodingErred(false);
 
     setEncodedMessage("");
     setDecodedMessage("");
@@ -98,14 +98,14 @@ export default function Main() {
 
     if (!encodedParams) return false;
 
-    setUrlCopied(true); // This should already be true, unless we are loading the response URL. Setting it true here explicitly just to be sure
+    setIsUrlCopied(true); // This should already be true, unless we are loading the response URL. Setting it true here explicitly just to be sure
 
     try {
       const decodedParams = JSON.parse(atob(encodedParams)) as ResponseMetaType;
 
       if (getRequestMeta().requestKey !== decodedParams.requestKey) {
         setEncodedMessage(m);
-        setKeyMismatched(true);
+        setHasKeyMismatched(true);
         return false;
       }
 
@@ -114,8 +114,8 @@ export default function Main() {
       const message = cryptoDecode(decodedParams);
 
       if (message) {
-        setEncodedMessagePasted(true);
-        setEncodedMessageDecoded(true);
+        setIsEncodedMessagePasted(true);
+        setIsEncodedMessageDecoded(true);
         setDecodedMessage(message);
         return true;  
       }
@@ -125,7 +125,7 @@ export default function Main() {
       }
     } catch {
       setEncodedMessage(m);
-      setDecodingErred(true);
+      setHasDecodingErred(true);
       return false;
     }
   };
@@ -133,7 +133,7 @@ export default function Main() {
   const handleDecodedMessageClicked = () => {
     Copy(decodedMessage);
 
-    setDecodedMessageCopied(true);
+    setIsDecodedMessageCopied(true);
     setDecodedMessage("");
   };
 
@@ -141,12 +141,12 @@ export default function Main() {
     setEncodedMessage("");
     setDecodedMessage("");
 
-    setUrlCopied(true); // Since we are resetting to decrypt another message using the same keys, we don't have to go back to step 1
-    setEncodedMessagePasted(false);
-    setEncodedMessageDecoded(false);
-    setDecodedMessageCopied(false);
-    setKeyMismatched(false);
-    setDecodingErred(false);
+    setIsUrlCopied(true); // Since we are resetting to decrypt another message using the same keys, we don't have to go back to step 1
+    setIsEncodedMessagePasted(false);
+    setIsEncodedMessageDecoded(false);
+    setIsDecodedMessageCopied(false);
+    setHasKeyMismatched(false);
+    setHasDecodingErred(false);
   };
 
   useEffect(() => {
@@ -159,12 +159,12 @@ export default function Main() {
   });
 
   let classes = "";
-  classes += urlCopied ? " url-copied" : "";
-  classes += encodedMessagePasted ? " encoded-message-pasted" : "";
-  classes += encodedMessageDecoded ? " encoded-message-decoded" : "";
-  classes += decodedMessageCopied ? " decoded-message-copied" : "";
-  classes += keyMismatched ? " key-mismatched" : "";
-  classes += decodingErred ? " decoding-erred" : "";
+  classes += isUrlCopied ? " url-copied" : "";
+  classes += isEncodedMessagePasted ? " encoded-message-pasted" : "";
+  classes += isEncodedMessageDecoded ? " encoded-message-decoded" : "";
+  classes += isDecodedMessageCopied ? " decoded-message-copied" : "";
+  classes += hasKeyMismatched ? " key-mismatched" : "";
+  classes += hasDecodingErred ? " decoding-erred" : "";
   classes = classes.trim();
 
   return (

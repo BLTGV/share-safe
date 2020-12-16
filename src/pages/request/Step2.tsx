@@ -214,17 +214,17 @@ export default function Step2(props: PropType) {
   const progress = useContext(ProgressContext) as ProgressFlags;
 
   let classes = "response";
-  classes += progress.encodedMessagePasted ? " encoded-message-pasted" : "";
-  classes += progress.encodedMessageDecoded ? " encoded-message-decoded" : "";
-  classes += progress.decodedMessageCopied ? " decoded-message-copied" : "";
-  classes += progress.keyMismatched ? " key-mismatched" : "";
-  classes += progress.decodingErred ? " decoding-erred" : "";
+  classes += progress.isEncodedMessagePasted ? " encoded-message-pasted" : "";
+  classes += progress.isEncodedMessageDecoded ? " encoded-message-decoded" : "";
+  classes += progress.isDecodedMessageCopied ? " decoded-message-copied" : "";
+  classes += progress.hasKeyMismatched ? " key-mismatched" : "";
+  classes += progress.hasDecodingErred ? " decoding-erred" : "";
   classes = classes.trim();
 
   const response = useRef(null) as any;
   
   useEffect(() => {
-    if (progress.urlCopied && !progress.encodedMessagePasted) 
+    if (progress.isUrlCopied && !progress.isEncodedMessagePasted) 
       response.current.focus();
   });
 
